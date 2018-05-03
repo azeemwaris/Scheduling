@@ -1,0 +1,4 @@
+Process Name       Arrival Time      Burst Time
+asdddd.exe            5                 3
+asddgd.exe            1                 5
+dfhdhf.exe            1                 6
