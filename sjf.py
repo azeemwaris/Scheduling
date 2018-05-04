@@ -6,6 +6,7 @@ class cstruct:
     start_exe_time = 0
     departure_time = 0
     waiting_time = 0
+    removed = 0
 
 
 
@@ -44,33 +45,57 @@ def main():
         for i in range(count):
             if min_num > data_array[i].arrival_time:
                 min_num = data_array[i].arrival_time
-         
+        print(min_num)         
+        check = 0
         for i in range(count):
             if min_num == data_array[i].arrival_time and data_array[i].arrival_time <= total_time :
                 ready_array[ready_count] = data_array[i]
                 ready_count += 1
-                del data_array[i]
-                count -= 1
+                data_array[i].removed = 1
+                check = 1
+                
 
-        if (ready_count == 0):
+        if ready_count == 0 or check == 0:
             for i in range(count):
                 if min_num == data_array[i].arrival_time :
                     ready_array[ready_count] = data_array[i]
                     ready_count += 1
-                    del data_array[i]
-                    count -= 1
-    
-        
+                    data_array[i].removed = 1
+                    
+        tempc = count
+        for i in range(tempc):
+            if data_array[i].removed == 1:
+                del data_array[i]
+                count -= 1
+        #print(count)
+
+        #for i in range(count):
+        #   print(data_array[i].process_name)
+        print("")
+        ready_array.sort(key=lambda cstruct: cstruct.burst_time , reverse=True)
+
+        #for i in range(ready_count):
+        #    print(ready_array[i].process_name)
 
 
-        ready_array.sort(key=lambda cstruct: cstruct.arrival_time , reverse=True)
-
-        running = ready_array[ready_count-1]
+        temp=ready_count-1
+        running = ready_array[temp]
         executed_array[exe_count],total_time = run_process(running,total_time)
         exe_count += 1
         del ready_array[ready_count-1]
         ready_count -= 1
-    
+        print(ready_array[ready_count-1].process_name)
+
+    ready_array.sort(key=lambda cstruct: cstruct.burst_time , reverse=True)
+    while (ready_count > 0):
+
+        temp = ready_count-1
+        running = ready_array[temp]
+        executed_array[exe_count],total_time = run_process(running,total_time)
+        exe_count += 1
+        del ready_array[ready_count-1]
+        ready_count -= 1
+        
        
     print("")
     print("Process name  , Arrival Time , Burst Time ,Start Exec Time, Waiting Time, Turnaround Time ")
