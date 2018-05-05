@@ -63,44 +63,26 @@ def main():
 
 
     fin.close()
-
+    data_array,count,ready_array,ready_count,total_time = copy_to_ready(data_array,count,ready_array,ready_count,total_time)
     while count > 0 :
     
-        min_num = data_array[0].arrival_time
-        for i in range(count):
-            if min_num > data_array[i].arrival_time:
-                min_num = data_array[i].arrival_time
-         
-        for i in range(count):
-            if min_num == data_array[i].arrival_time and data_array[i].arrival_time <= total_time :
-                ready_array[ready_count] = data_array[i]
-                ready_count += 1
-                del data_array[i]
-                count -= 1
-
-        if (ready_count == 0):
-            for i in range(count):
-                if min_num == data_array[i].arrival_time :
-                    ready_array[ready_count] = data_array[i]
-                    ready_count += 1
-                    del data_array[i]
-                    count -= 1
     
-        
-
-
-        #ready_array.sort(key=lambda cstruct: cstruct.arrival_time , reverse=True)
 
         running = ready_array[0]
         running,data_array,executed_array,total_time = run_process_without_input(running,data_array,executed_array,total_time,time_slice)
 
         if running.removed == 1:
+            data_array,count,ready_array,ready_count,total_time = copy_to_ready(data_array,count,ready_array,ready_count,total_time)
             executed_array[exe_count]=running
             exe_count += 1
             del ready_array[0]
             ready_count -= 1
 
-        
+        else:
+            data_array,count,ready_array,ready_count,total_time = copy_to_ready(data_array,count,ready_array,ready_count,total_time)
+            ready_array[ready_count-1] = running
+            del ready_array[0]
+            
         
     
         
@@ -141,6 +123,44 @@ def run_process_without_input(running,data_array,executed_array,total_time,time_
         total_time += 1
 
     return running,data_array,executed_array,total_time
+
+
+
+
+
+def copy_to_ready(data_array,count,ready_array,ready_count,total_time):
+
+    min_num = data_array[0].arrival_time
+    for i in range(count):
+        if min_num > data_array[i].arrival_time:
+            min_num = data_array[i].arrival_time
+
+           
+    check = 0
+    for i in range(count):
+        if  data_array[i].arrival_time <= total_time :
+            ready_array[ready_count] = data_array[i]
+            ready_count += 1
+            data_array[i].removed = 1
+            check = 1
+                
+
+    if ready_count == 0 or check == 0:
+        for i in range(count):
+            if min_num == data_array[i].arrival_time :
+                ready_array[ready_count] = data_array[i]
+                ready_count += 1
+                data_array[i].removed = 1
+                    
+    tempc = count
+    for i in range(tempc):
+        if data_array[i].removed == 1:
+            del data_array[i]
+            count -= 1
+
+    return data_array,count,ready_array,ready_count,total_time
+
+
 
 
 main()
