@@ -69,21 +69,26 @@ def main():
     
 
         running = ready_array[0]
-        running,data_array,executed_array,total_time = run_process_without_input(running,data_array,executed_array,total_time,time_slice)
 
-        if running.removed == 1:
-            data_array,count,ready_array,ready_count,total_time = copy_to_ready(data_array,count,ready_array,ready_count,total_time)
-            executed_array[exe_count]=running
-            exe_count += 1
-            del ready_array[0]
-            ready_count -= 1
+        if running.input == 0:
 
-        else:
-            data_array,count,ready_array,ready_count,total_time = copy_to_ready(data_array,count,ready_array,ready_count,total_time)
-            ready_array[ready_count-1] = running
-            del ready_array[0]
+            running,data_array,executed_array,total_time = run_process_without_input(running,data_array,executed_array,total_time,time_slice)
+
+            if running.removed == 1:
+                data_array,count,ready_array,ready_count,total_time = copy_to_ready(data_array,count,ready_array,ready_count,total_time)
+                executed_array[exe_count]=running
+                exe_count += 1
+                del ready_array[0]
+                ready_count -= 1
+
+            else:
+                data_array,count,ready_array,ready_count,total_time = copy_to_ready(data_array,count,ready_array,ready_count,total_time)
+                ready_array[ready_count-1] = running
+                del ready_array[0]
             
-        
+        else:
+             running,data_array,waiting_array,total_time = run_process_with_input(running,data_array,waiting_array,total_time,time_slice)
+
     
         
     print("")
@@ -160,6 +165,12 @@ def copy_to_ready(data_array,count,ready_array,ready_count,total_time):
 
     return data_array,count,ready_array,ready_count,total_time
 
+def run_process_with_input(running,data_array,waiting_array,total_time,time_slice):
+
+    while (running.arrival_time > total_time):
+        total_time += 1
+
+    
 
 
 
